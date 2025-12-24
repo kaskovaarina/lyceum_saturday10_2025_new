@@ -1,0 +1,102 @@
+package com.example.lyceum_saturday10_2025.features.goods.presentation
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.lyceum_saturday10_2025.App
+import com.example.lyceum_saturday10_2025.db.Good
+import com.example.lyceum_saturday10_2025.features.goods.presentation.contract.GoodsUiState
+import com.example.lyceum_saturday10_2025.features.goods.presentation.model.GoodsItem
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+
+class GoodsViewModel : ViewModel() {
+
+    val db = App.getDatabase()
+
+    private val _state = MutableStateFlow(GoodsUiState())
+    val state: StateFlow<GoodsUiState>
+        get() = _state
+
+    init {
+        loadGoodsFromDatabase()
+    }
+
+    private fun loadGoodsFromDatabase() {
+        viewModelScope.launch {
+            val goodsFromDb = db
+                ?.goodsDao()
+                ?.getAllGoods()
+                ?.map { good ->
+                    GoodsItem(
+                        id = good.id.toLong(), // 🎯 ПРЕОБРАЗУЕМ Int В Long
+                        name = good.name,
+                        rating = good.rating,
+                        description = good.description,
+                        imageURL = "" // Без imageUrl из базы
+                    )
+                } ?: emptyList()
+
+            _state.value = GoodsUiState(
+                mockList + goodsFromDb
+            )
+        }
+    }
+
+    fun addGood(name: String, description: String, imageUrl: String = "") {
+        viewModelScope.launch {
+            val goodsList = state.value.items.toMutableList()
+            goodsList.add(
+                GoodsItem(
+                    name = name,
+                    rating = 5,
+                    description = description,
+                    imageURL = imageUrl
+                )
+            )
+            db?.goodsDao()?.insert(
+                Good(
+                    name = name,
+                    description = description,
+                    rating = 5
+                    // Без imageUrl в базе
+                )
+            )
+            _state.value = GoodsUiState(goodsList)
+        }
+    }
+
+    fun deleteGood(goodId: Long) {
+        viewModelScope.launch {
+            // Просто удаляем из списка в UI
+            val goodsList = state.value.items.filterNot { it.id == goodId }
+            _state.value = GoodsUiState(goodsList)
+        }
+    }
+
+    companion object {
+        val mockList = listOf(
+            GoodsItem(
+                id = 1L, // 🎯 ДОБАВЛЯЕМ L К КОНЦУ
+                name = "Курс по Kotlin",
+                rating = 4,
+                description = "test description",
+                imageURL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSibbxABu10t0qxQWHjH-QQFSWaCgd68RbztA&s"
+            ),
+            GoodsItem(
+                id = 2L, // 🎯 ДОБАВЛЯЕМ L К КОНЦУ
+                name = "Курс по Java",
+                rating = 5,
+                description = "test description2",
+                imageURL = "https://1000logos.net/wp-content/uploads/2020/09/Java-Logo.jpg"
+            ),
+            GoodsItem(
+                id = 3L, // 🎯 ДОБАВЛЯЕМ L К КОНЦУ
+                name = "Курс по Python",
+                rating = 2,
+                description = "test description3",
+                imageURL = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Python_logo_and_wordmark.svg/2560px-Python_logo_and_wordmark.svg.png"
+            )
+        )
+    }
+}
