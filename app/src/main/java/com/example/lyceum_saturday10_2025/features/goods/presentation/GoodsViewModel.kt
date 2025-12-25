@@ -59,7 +59,7 @@ class GoodsViewModel : ViewModel() {
                     name = name,
                     description = description,
                     rating = 5
-                    // Без imageUrl в базе
+                
                 )
             )
             _state.value = GoodsUiState(goodsList)
@@ -68,7 +68,7 @@ class GoodsViewModel : ViewModel() {
 
     fun deleteGood(goodId: Long) {
         viewModelScope.launch {
-            // Просто удаляем из списка в UI
+            
             val goodsList = state.value.items.filterNot { it.id == goodId }
             _state.value = GoodsUiState(goodsList)
         }
