@@ -33,7 +33,7 @@ class GoodsViewModel : ViewModel() {
                         name = good.name,
                         rating = good.rating,
                         description = good.description,
-                        imageURL = "" // Без imageUrl из базы
+                        imageURL = "" 
                     )
                 } ?: emptyList()
 
