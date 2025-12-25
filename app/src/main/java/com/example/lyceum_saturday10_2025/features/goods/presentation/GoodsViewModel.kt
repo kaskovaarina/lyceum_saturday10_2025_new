@@ -29,7 +29,7 @@ class GoodsViewModel : ViewModel() {
                 ?.getAllGoods()
                 ?.map { good ->
                     GoodsItem(
-                        id = good.id.toLong(), // 🎯 ПРЕОБРАЗУЕМ Int В Long
+                        id = good.id.toLong(),
                         name = good.name,
                         rating = good.rating,
                         description = good.description,
@@ -77,21 +77,21 @@ class GoodsViewModel : ViewModel() {
     companion object {
         val mockList = listOf(
             GoodsItem(
-                id = 1L, // 🎯 ДОБАВЛЯЕМ L К КОНЦУ
+                id = 1L, 
                 name = "Курс по Kotlin",
                 rating = 4,
                 description = "test description",
                 imageURL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSibbxABu10t0qxQWHjH-QQFSWaCgd68RbztA&s"
             ),
             GoodsItem(
-                id = 2L, // 🎯 ДОБАВЛЯЕМ L К КОНЦУ
+                id = 2L, 
                 name = "Курс по Java",
                 rating = 5,
                 description = "test description2",
                 imageURL = "https://1000logos.net/wp-content/uploads/2020/09/Java-Logo.jpg"
             ),
             GoodsItem(
-                id = 3L, // 🎯 ДОБАВЛЯЕМ L К КОНЦУ
+                id = 3L, 
                 name = "Курс по Python",
                 rating = 2,
                 description = "test description3",
